@@ -2,43 +2,37 @@ package models;
 
 import java.util.concurrent.Semaphore;
 
-public class Estoque{ //equivalente a um buffer
+public class Estoque { // Equivalente a um buffer com 500 unidades
     
     private final int[] buffer;
-    private int index = 500; // index começa em 500 para representar o buffer cheio
+    private int index = 500; // Inicia com 500 unidades conforme requisito I
 
-    //private final Semaphore empty;
-    private final Semaphore full;
-    private final Semaphore mutex;
-    private final Semaphore limiter;
+    private final Semaphore full;    // Controla as peças disponíveis
+    private final Semaphore mutex;   // Exclusão mútua para acesso ao buffer
+    private final Semaphore limiter; // Limitador para a esteira que atende até 5 solicitações por vez (requisito I)
 
-    public Estoque(){
-        buffer = new int[index]; // tamanho do buffer
-        full = new Semaphore(index); // inicia com 500 para representar que o buffer(estoque) está cheio
-        limiter = new Semaphore(5);
-        mutex = new Semaphore(1); // mutex para garantir exclusao mutua 
+    public Estoque() {
+        buffer = new int[index]; // Tamanho do buffer conforme requisito I
+        full = new Semaphore(index); // Inicia com 500 peças disponíveis
+        limiter = new Semaphore(5);  // Esteira atende até 5 solicitações por vez conforme requisito I
+        mutex = new Semaphore(1);    // Mutex para garantir exclusão mútua
     }
 
-    public void coletarItem(int idFuncionario, int idMesa) throws InterruptedException{
-
-        limiter.acquire(); // limita a quantidade de itens que podem ser coletados
-        full.acquire(); 
-        mutex.acquire();
-        //SECAO CRITICA
-        index--; // decrementa o index
-        buffer[index] = 0;
+    public void coletarItem(int idFuncionario, int idMesa) throws InterruptedException {
+        limiter.acquire(); // Limita a 5 solicitações simultâneas na esteira conforme requisito I
+        full.acquire();    // Verifica se há peças disponíveis
+        mutex.acquire();   // Entra na região crítica
+        
+        index--;           // Decrementa o índice (consome uma peça)
+        buffer[index] = 0; // Marca a posição como vazia
 
         if (index == 0) {
-            System.out.println("Mesa: "+idMesa+" Funcionario: "+idFuncionario+" Coletou o ultimo item do Estoque..");
+            System.out.println("Mesa: " + idMesa + " Funcionario: " + idFuncionario + " Coletou o último item do Estoque..");
         }
 
-        mutex.release(); // sai da região crítica
-        //FIM SECAO CRITICA
-
-        //full.release(); // não incrementa dnv pois o estoque é limitado
-        limiter.release(); // libera a quantidade de itens que podem ser coletados
-        System.out.println("Mesa: "+idMesa+" Funcionario: "+idFuncionario+" coletou um item do estoque, Items restantes: "+index);
-
+        mutex.release(); // Sai da região crítica
+        limiter.release(); // Libera a esteira para atender outras solicitações
         
+        System.out.println("Mesa: " + idMesa + " Funcionario: " + idFuncionario + " coletou um item do estoque, Items restantes: " + index);
     }
 }

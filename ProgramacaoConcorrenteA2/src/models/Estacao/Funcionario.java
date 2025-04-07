@@ -22,16 +22,18 @@ public class Funcionario implements Runnable {
     }
 
     private void pensar() throws InterruptedException {
-        System.out.println("O Funcionario nr: " + this.id + " da MESA " + this.idMesa + " vai pensar um pouco...");
+        System.out.println("O Funcionario nr: " + this.id + " da Estação " + this.idMesa + " está pensando...");
         Thread.sleep(2000);
         System.out.println("O Funcionario nr: " + this.id + " da MESA " + this.idMesa + " pensou!!!");
     }
 
     private Carro trabalhar() throws InterruptedException {
-        System.out.println("O Funcionario nr: " + this.id + " da MESA " + this.idMesa + " tem 2 ferramentas e vai trabalhar!!");
+        System.out.println("O Funcionario nr: " + this.id + " da Estação " + this.idMesa + " está trabalhando com as duas ferramentas!");
         Thread.sleep(2000);
-        Carro carro = new Carro("Carro");
-        System.out.println("O Funcionario nr: " + this.id + " da MESA " + this.idMesa + " produziu um carro e vai devolver as ferramentas!!!");
+
+        // O -1 será substituído pela posição correta quando o carro for depositado na esteira
+        Carro carro = new Carro(this.idMesa, this.id, -1);
+        System.out.println("O Funcionario nr: " + this.id + " da Estação " + this.idMesa + " produziu um " + carro +" e vai devolver as ferramentas!!!");
         return carro;
     }
 
@@ -41,26 +43,34 @@ public class Funcionario implements Runnable {
             while (true) {
                 pensar();
 
+                // Coleta peças do estoque
+                estoque.coletarItem(this.id, this.idMesa);
+
                 // Alterna a ordem de aquisição das ferramentas para prevenir deadlock
-                if (id < 4) {
-                    estoque.coletarItem(this.id, this.idMesa);
+                if (id % 2 == 0) {
                     ferramentaEsquerda.acquire();
                     ferramentaDireita.acquire();
                 } else {
-                    estoque.coletarItem(this.id, this.idMesa);
                     ferramentaDireita.acquire();
                     ferramentaEsquerda.acquire();
                 }
 
                 Carro carro = trabalhar();
-                ferramentaEsquerda.release();
-                ferramentaDireita.release();
+                
+                // Libera as ferramentas na ordem inversa da aquisição
+                if (id % 2 == 0) {
+                    ferramentaDireita.release();
+                    ferramentaEsquerda.release();
+                } else {
+                    ferramentaEsquerda.release();
+                    ferramentaDireita.release();
+                }
 
                 // Deposita o carro produzido na esteira de produção comum
-                esteiraCircular.depositarCarro(this.id, this.idMesa, carro);
+                esteiraCircular.depositarCarro(carro);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("Funcionário " + this.id + " da Estação " + this.idMesa + " foi interrompido");
             Thread.currentThread().interrupt();
         }
     }

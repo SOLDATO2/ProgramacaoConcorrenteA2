@@ -11,6 +11,8 @@ import models.Cliente;
 
 public class App {
     public static void main(String[] args) throws Exception {
+        System.out.println("Iniciando simulação de cadeia de produção de veículos");
+
         Estoque estoque = new Estoque();
 
         //cria a esteira circular compartilhada com todas as mesas (capacidade 40 veiculos)
@@ -58,7 +60,7 @@ public class App {
         //criar e iniciar as lojas (3 lojas)
         List<Loja> lojas = new ArrayList<>();
         List<Thread> threadsLojas = new ArrayList<>();
-        int totalLojas = 3;
+        int totalLojas = 3; // Conforme requisito III
         for (int i = 0; i < totalLojas; i++) {
             Loja loja = new Loja(i, esteirasProducao);
             lojas.add(loja);
@@ -67,14 +69,18 @@ public class App {
             threadLoja.start();
         }
 
+        Thread.sleep(2000);
         //cria e inicia os clientes (20 clientes)
         List<Thread> threadsClientes = new ArrayList<>();
-        int totalClientes = 20;
+        int totalClientes = 20; // Conforme requisito IV
         for (int i = 0; i < totalClientes; i++) {
             Cliente cliente = new Cliente(i, lojas);
             Thread threadCliente = new Thread(cliente);
             threadsClientes.add(threadCliente);
             threadCliente.start();
         }
+
+        System.out.println("Simulação iniciada com sucesso!");
+        System.out.println("Pressione Ctrl+C para encerrar a simulação");
     }
 }
