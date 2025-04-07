@@ -60,7 +60,6 @@ public class EsteiraCircular {
 
         Carro carro = esteira[head];
         esteira[head] = null; // Libera a referência para o GC
-        int posicaoAtual = head;
         head = (head + 1) % capacidade;
 
         carro.setInfoVenda(idLoja, posicaoEsteiraLoja);

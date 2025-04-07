@@ -33,17 +33,14 @@ public class Loja implements Runnable {
     public void run() {
         try {
             while (true) {
-                // A loja retira um carro da esteira de produção da fábrica
-                // Se não houver carros disponíveis, fica em espera (requisito III)
-                Carro carro = esteiraProducao.retirarCarro(this.id, 0); 
-                
-                // O valor -1 será substituído pela posição correta na esteira da loja
+
+                int posicaoLoja = esteiraLoja.getProximaPosicao();
+                Carro carro = esteiraProducao.retirarCarro(this.id, posicaoLoja);
+
                 System.out.println("Loja " + id + " comprou " + carro + " da fábrica");
 
-                // Deposita o carro na sua esteira interna
                 esteiraLoja.depositarCarro(carro);
 
-                // Pausa para simular o processamento
                 Thread.sleep(500 + random.nextInt(500));
             }
         } catch (InterruptedException e) {

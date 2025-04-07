@@ -17,7 +17,7 @@ public class Carro{
         synchronized (lock) {
             this.id = ++contadorCarros;
         }
-        // Alterna entre as cores RGB conforme requisito V
+
         switch (id % 3) {
             case 0:
                 this.cor = "Vermelho";
@@ -30,7 +30,6 @@ public class Carro{
                 break;
         }
 
-        // Alterna entre SUV ou SEDAN conforme requisito V
         this.tipo = (id % 2 == 0) ? "SUV" : "SEDAN";
 
         this.idEstacaoProdutora = idEstacaoProdutora;

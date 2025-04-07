@@ -74,4 +74,9 @@ public class EsteiraCircularLoja {
         System.out.println("Loja " + idLoja + " vendeu " + carro + " da posição " + posicaoAtual + " para o Cliente " + idCliente);
         return carro;
     }
+
+    public int getProximaPosicao() {
+        return tail;
+    }
+
 }
