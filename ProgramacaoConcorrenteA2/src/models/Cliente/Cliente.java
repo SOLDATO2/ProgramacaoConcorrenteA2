@@ -1,4 +1,5 @@
-package models;
+package models.Cliente;
+import models.Carro;
 import models.Loja.Loja;
 import java.util.List;
 import java.util.Random;

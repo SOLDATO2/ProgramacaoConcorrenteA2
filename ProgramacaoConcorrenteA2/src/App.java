@@ -1,13 +1,14 @@
 import java.util.Vector;
 import java.util.concurrent.Semaphore;
 import models.Estoque;
-import models.Estacao.EsteiraCircular;
-import models.Estacao.Funcionario;
-import models.Estacao.Mesa;
+import models.Cliente.Cliente;
+import models.Fabrica.EsteiraCircular;
+import models.Fabrica.Funcionario;
+import models.Fabrica.Mesa;
+
 import java.util.List;
 import java.util.ArrayList;
 import models.Loja.Loja;
-import models.Cliente;
 
 public class App {
     public static void main(String[] args) throws Exception {

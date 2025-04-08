@@ -1,7 +1,9 @@
-package models;
+package models.Cliente;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import models.Carro;
 
 public class Garagem {
     private final int idCliente;

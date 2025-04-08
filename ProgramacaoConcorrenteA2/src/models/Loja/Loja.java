@@ -1,6 +1,6 @@
 package models.Loja;
-import models.Estacao.EsteiraCircular;
 import models.Carro;
+import models.Fabrica.EsteiraCircular;
 
 import java.util.List;
 import java.util.Random;
