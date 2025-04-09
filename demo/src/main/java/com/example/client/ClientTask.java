@@ -16,6 +16,7 @@ public class ClientTask implements Runnable {
     private Vector<Carro> garagem;
     public ClientTask(int clientId) {
         this.clientId = clientId;
+        this.garagem = new Vector<>();
     }
     public class ShopClient extends WebSocketClient {
         private int clientId;
