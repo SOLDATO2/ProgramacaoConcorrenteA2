@@ -1,6 +1,7 @@
 package models;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.io.IOException;
 
 public class EsteiraCircularLoja {
@@ -9,7 +10,7 @@ public class EsteiraCircularLoja {
     private int tail;
     private final int capacidade = 40; 
     private final Semaphore empty; // posições vazias
-    private final Semaphore full; // posições preenchidas
+    private final Semaphore full;  // posições preenchidas
     private final Semaphore mutex; // exclusão mútua
     private final int idLoja;
     private Logger loggerRecebimento;
@@ -40,7 +41,7 @@ public class EsteiraCircularLoja {
         esteira[tail] = carro;
         tail = (tail + 1) % capacidade;
 
-        //Atualiza a posição do carro na esteira da loja
+        // Atualiza a posição do carro na esteira da loja
         carro.setInfoVenda(idLoja, posicao);
 
         if (loggerRecebimento != null) {
@@ -53,8 +54,12 @@ public class EsteiraCircularLoja {
         System.out.println("Loja " + idLoja + " armazenou " + carro + " na posição " + posicao);
     }
 
-    public Carro retirarCarro(int idCliente) throws InterruptedException {
-        full.acquire(); // espera por um carro disponível
+    public Carro retirarCarro(int idCliente) throws InterruptedException, Exception {
+        // Tenta adquirir uma permissão por até 5 segundos
+        boolean acquired = full.tryAcquire(5, TimeUnit.SECONDS);
+        if (!acquired) {
+            throw new Exception("No stock available on shop conveyor");
+        }
         mutex.acquire();
 
         Carro carro = esteira[head];
@@ -80,6 +85,4 @@ public class EsteiraCircularLoja {
     public boolean isEmpty() {
         return full.availablePermits() == 0;
     }
-    
-
 }

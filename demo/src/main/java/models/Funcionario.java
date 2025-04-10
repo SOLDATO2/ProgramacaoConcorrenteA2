@@ -45,8 +45,9 @@ public class Funcionario implements Runnable {
                     estoque.coletarItem(id, idMesa);
                 } catch (OutOfStockException e) {
                     System.out.println("Estoque esgotado na fábrica. Funcionário " + id + " da Estação " + idMesa);
-                    com.example.factory.FactoryTask.estoqueEsgotado = true;
-                    break;  // Encerra a produção neste funcionário
+                    // Não finaliza o serviço; aguarda um tempo e tenta novamente
+                    Thread.sleep(2000);
+                    continue;
                 }
                 butler.acquire();
                 if (id % 2 == 0) {
